@@ -6,6 +6,7 @@
 /storage/*.key
 /vendor
 /start.bat
+/tofix.txt
 .env
 .env.backup
 .env.production

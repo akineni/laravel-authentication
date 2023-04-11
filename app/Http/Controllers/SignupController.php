@@ -12,7 +12,7 @@ class SignupController extends Controller
     public function signup(Request $request) {
 
         $validated = $request->validate([
-            'username' => 'bail|required|unique:App\Models\User|', //alfa_num
+            'username' => 'bail|required|unique:App\Models\User|alpha_dash:ascii|regex:/^[a-zA-Z]+/i',
             'email' => 'bail|required|email|unique:App\Models\User|ends_with:@gmail.com,@yahoo.com',
             'phone' => 'bail|required|unique:App\Models\User|numeric|digits:11',
             // 'password' => ['bail', 'required', 'confirmed',
@@ -26,7 +26,8 @@ class SignupController extends Controller
             'password_confirmation' => 'bail|required',
             'terms' => 'bail|required'
         ], [
-            'email:ends_with' => 'Only gmail & yahoomail accepted'
+            'username.regex' => 'Username field cannot start with a number',
+            'email.ends_with' => 'Only gmail & yahoomail accepted'
         ]);
 
         $user = User::create($validated);

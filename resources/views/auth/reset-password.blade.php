@@ -11,15 +11,13 @@
             <div class="card-body">
               
               <h4 class="mb-2">Reset your password 🚀</h4>
-              <p class="mb-4"> </p>
+              <p class="mb-4"></p>
 
               @if(session('status'))
                 <div class="alert alert-{{ session('class') }}" role="alert">{!! session('status') !!}</div>
               @endif
 
-              {{ var_dump(session) }}
-
-              <form id="formAuthentication" class="mb-3" method="POST"
+              <form id="formAuthentication" class="mb-3" method="POST" autocomplete="off"
               action="{{ url('reset-password') }}">
                 @csrf
 
@@ -73,6 +71,7 @@
                   @enderror
 
                 </div>
+                <input type="hidden" name="token" value="{{ $token }}" />
                 <button class="btn btn-primary d-grid w-100">Reset Password</button>
               </form>
             </div>

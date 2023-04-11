@@ -17,7 +17,7 @@
                 <div class="alert alert-success" role="alert">{!! session('status') !!}</div>
               @endif
 
-              <form id="formAuthentication" class="mb-3" method="POST">
+              <form id="formAuthentication" class="mb-3" method="POST" autocomplete="off">
                 @csrf
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>

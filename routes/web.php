@@ -9,7 +9,8 @@ use App\Http\Controllers\{
     EmailVerificationHandlerController,
     EmailVerificationSendController,
     ForgotPasswordController,
-    ResetPasswordController
+    ResetPasswordController,
+    DashboardController
 };
 
 /*
@@ -43,8 +44,8 @@ Route::middleware('guest')->group(function() {
 
 Route::middleware(['auth', 'verified'])->group(function() { 
 
-    Route::view('/dashboard',  'dashboard.dashboard')->name('dashboard');
-    Route::get('/dashboard/logout',  [LogoutController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
+    Route::get('/dashboard/logout', [LogoutController::class, 'logout'])->name('logout');
 
     Route::get(
         '/email/verify',
@@ -62,7 +63,3 @@ Route::post(
     '/email/verification-notification',
     [EmailVerificationSendController::class, 'send']
 )->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
-Route::fallback(function () {
-    return view('/error', 'errors.404')->name('Page Not Found');
-});

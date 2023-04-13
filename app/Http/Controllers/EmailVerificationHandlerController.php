@@ -10,13 +10,11 @@ class EmailVerificationHandlerController extends Controller
     public function verify(EmailVerificationRequest $request) {
 
         $request->fulfill();
-        
-        return redirect(
-            Auth::check() ? 'dashboard' : 'login'
-        )->with([
+               
+        return redirect('/dashboard')->with([
             'class' => 'success',
             'message' => 'Email verification was <b>successful!</b>'
-        ]); //flash message not showing
+        ]);
 
     }
 }

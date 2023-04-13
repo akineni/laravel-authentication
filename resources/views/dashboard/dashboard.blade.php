@@ -211,6 +211,10 @@
             <!-- Content -->
 
             <div class="container-fluid flex-grow-1 container-p-y">
+
+            @if(session('class'))
+              <div class="alert alert-{{ session('class') }}" role="alert">{!! session('message') !!}</div>
+            @endif
               
             </div>
             <!-- / Content -->

@@ -62,4 +62,4 @@ Route::get(
 Route::post(
     '/email/verification-notification',
     [EmailVerificationSendController::class, 'send']
-)->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+)->middleware(['auth', 'throttle:6,1'])->name('verification.send');   

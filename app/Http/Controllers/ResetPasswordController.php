@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use Illuminate\Support\Facades\Password;
 
@@ -20,9 +20,9 @@ class ResetPasswordController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function update(Request $request)
+    public function update(ResetPasswordRequest $request)
     {
-        $status = $this->authService->reset($request);
+        $status = $this->authService->reset($request->validated());
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with([

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\{ Request, RedirectResponse };
+use App\Http\Requests\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use App\Services\AuthService;
 
 class LoginController extends Controller
@@ -19,9 +20,12 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request): RedirectResponse
+    public function login(LoginRequest $request): RedirectResponse
     {
-        if ($this->authService->attemptLogin($request)) {
+        $credentials = $request->credentials();
+        $remember = $request->boolean('remember-me');
+
+        if ($this->authService->attemptLogin($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }

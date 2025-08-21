@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\SignupRequest;
 use App\Services\AuthService;
 
 class SignupController extends Controller
@@ -19,9 +19,10 @@ class SignupController extends Controller
         return view('auth.signup');
     }
 
-    public function signup(Request $request)
+    public function signup(SignupRequest $request)
     {
-        $this->authService->register($request);
+        $data = $request->validatedData();
+        $this->authService->register($data);
 
         return redirect('login')->with([
             'class' => 'success',

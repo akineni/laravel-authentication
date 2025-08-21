@@ -24,42 +24,44 @@ use App\Http\Controllers\{
 |
 */
 
-Route::middleware('guest')->group(function() {
+Route::middleware('guest')->group(function () {
+    Route::redirect('/', '/login');
 
-    Route::redirect('/',  '/login');
+    Route::prefix('login')->controller(LoginController::class)->group(function () {
+        Route::get('/', 'showLoginForm')->name('login');
+        Route::post('/', 'login');
+    });
 
-    Route::view('/login',  'auth.login')->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::prefix('signup')->controller(SignupController::class)->group(function () {
+        Route::get('/', 'showSignupForm')->name('signup');
+        Route::post('/', 'signup');
+    });
 
-    Route::view('/signup',  'auth.signup')->name('signup');
-    Route::post('/signup', [SignupController::class, 'signup']);
+    Route::prefix('forgot-password')->controller(ForgotPasswordController::class)->group(function () {
+        Route::get('/', 'showLinkRequestForm')->name('password.request');
+        Route::post('/', 'request')->name('password.email');
+    });
 
-    Route::view('/forgot-password',  'auth.forgot-password')->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'request'])->name('password.email');
-
-    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'view'])->name('password.reset');
-    Route::post('/reset-password', [ResetPasswordController::class, 'update'])->name('password.update');
-
+    Route::prefix('reset-password')->controller(ResetPasswordController::class)->group(function () {
+        Route::get('/{token}', 'showResetPasswordForm')->name('password.reset');
+        Route::post('/', 'update')->name('password.update');
+    });
 });
 
-Route::middleware(['auth', 'verified'])->group(function() { 
-
-    Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
-    Route::get('/dashboard/logout', [LogoutController::class, 'logout'])->name('logout');
-
-    Route::get(
-        '/email/verify',
-        [EmailVerificationNoticeController::class, 'notify']
-    )->withoutMiddleware('verified')->name('verification.notice');
-
+Route::middleware(['auth', 'verified'])->controller(DashboardController::class)->group(function () {
+    Route::get('/dashboard', 'view')->name('dashboard');
+    Route::get('/logout', 'logout')->name('logout');
 });
 
-Route::get(
-    '/email/verify/{id}/{hash}',
-    [EmailVerificationHandlerController::class, 'verify']
-)->middleware(['auth', 'signed'])->name('verification.verify');
+Route::middleware('auth')->prefix('email')->name('verification.')->group(function () {
+    Route::prefix('verify')->group(function () {
+        Route::get('/', [EmailVerificationNoticeController::class, 'notify'])
+            ->name('notice');
 
-Route::post(
-    '/email/verification-notification',
-    [EmailVerificationSendController::class, 'send']
-)->middleware(['auth', 'throttle:6,1'])->name('verification.send');   
+        Route::get('/{id}/{hash}', [EmailVerificationHandlerController::class, 'verify'])
+            ->middleware('signed')->name('verify');
+    });
+
+    Route::post('/verification-notification', [EmailVerificationSendController::class, 'send'])
+        ->middleware('throttle:6,1')->name('send');
+});

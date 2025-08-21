@@ -9,6 +9,11 @@ use Illuminate\Auth\Events\Registered;
 
 class SignupController extends Controller
 {
+    public function showSignupForm()
+    {
+        return view('auth.signup');
+    }
+    
     public function signup(Request $request) {
 
         $validated = $request->validate([

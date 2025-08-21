@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
-    public function view(string $token) {
+    public function showResetPasswordForm(string $token) {
         return view('auth.reset-password', ['token' => $token]);
     }
 

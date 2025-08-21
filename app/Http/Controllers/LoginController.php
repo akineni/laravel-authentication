@@ -3,32 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\{ Request, RedirectResponse };
-use Illuminate\Support\Facades\Auth;
+use App\Services\AuthService;
 
 class LoginController extends Controller
 {
+    protected AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function showLoginForm()
     {
         return view('auth.login');
     }
-    
-    public function login(Request $request): RedirectResponse {
 
-        $key = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL);
-
-        $credentials = $request->validate([
-            'email' => $key ? 'bail|required|email' : 'bail|required',
-            'password' => 'bail|required'
-        ]);
-
-        if(!$key) {
-            $credentials['username'] = $credentials['email'];
-            unset($credentials['email']);
-        }
-
-        if(Auth::attempt($credentials, filter_var($request->input('remember-me'), FILTER_VALIDATE_BOOLEAN))) {
+    public function login(Request $request): RedirectResponse
+    {
+        if ($this->authService->attemptLogin($request)) {
             $request->session()->regenerate();
- 
             return redirect()->intended('dashboard');
         }
 

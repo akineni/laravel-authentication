@@ -3,46 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Auth\Events\Registered;
+use App\Services\AuthService;
 
 class SignupController extends Controller
 {
+    protected AuthService $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function showSignupForm()
     {
         return view('auth.signup');
     }
-    
-    public function signup(Request $request) {
 
-        $validated = $request->validate([
-            'username' => 'bail|required|unique:App\Models\User|alpha_dash:ascii|regex:/^[a-zA-Z]+/i',
-            'email' => 'bail|required|email|unique:App\Models\User|ends_with:@gmail.com,@yahoo.com',
-            'phone' => 'bail|required|unique:App\Models\User|numeric|digits:11',
-            // 'password' => ['bail', 'required', 'confirmed',
-            //     Password::min(8)
-            //     ->letters()
-            //     ->mixedCase()
-            //     ->numbers()
-            //     ->symbols()
-            //     ->uncompromised() ],
-            'password' => 'bail|required|confirmed|min:8',
-            'password_confirmation' => 'bail|required',
-            'terms' => 'bail|required'
-        ], [
-            'username.regex' => 'Username field cannot start with a number',
-            'email.ends_with' => 'Only gmail & yahoomail accepted'
-        ]);
-
-        $user = User::create($validated);
-
-        event(new Registered($user));
+    public function signup(Request $request)
+    {
+        $this->authService->register($request);
 
         return redirect('login')->with([
             'class' => 'success',
             'message' => 'Signup was <b>successful!</b>, you can now login'
         ]);
-
     }
 }

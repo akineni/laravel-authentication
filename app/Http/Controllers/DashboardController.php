@@ -3,25 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\{ Request, RedirectResponse };
-use Illuminate\Support\Facades\Auth;
+use App\Services\AuthService;
 
 class DashboardController extends Controller
 {
-    public function view(Request $request) {
+    protected AuthService $authService;
 
-        $user = auth()->user();
-        
-        return view('dashboard.dashboard', ['username' => $user->username]);
-        
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
     }
 
-    public function logout(Request $request): RedirectResponse {
-        Auth::logout();
- 
-        $request->session()->invalidate();
-    
-        $request->session()->regenerateToken();
-    
+    public function view(Request $request)
+    {
+        $user = $request->user();
+        return view('dashboard.dashboard', ['username' => $user->username]);
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        $this->authService->logout($request);
+
         return redirect('/');
     }
 }

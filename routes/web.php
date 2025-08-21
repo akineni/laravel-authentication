@@ -3,11 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
     SignupController,
-    LoginController, 
-    LogoutController, 
-    EmailVerificationNoticeController,
-    EmailVerificationHandlerController,
-    EmailVerificationSendController,
+    LoginController,
+    EmailVerificationController,
     ForgotPasswordController,
     ResetPasswordController,
     DashboardController
@@ -55,13 +52,13 @@ Route::middleware(['auth', 'verified'])->controller(DashboardController::class)-
 
 Route::middleware('auth')->prefix('email')->name('verification.')->group(function () {
     Route::prefix('verify')->group(function () {
-        Route::get('/', [EmailVerificationNoticeController::class, 'notify'])
+        Route::get('/', [EmailVerificationController::class, 'notify'])
             ->name('notice');
 
-        Route::get('/{id}/{hash}', [EmailVerificationHandlerController::class, 'verify'])
+        Route::get('/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware('signed')->name('verify');
     });
 
-    Route::post('/verification-notification', [EmailVerificationSendController::class, 'send'])
+    Route::post('/verification-notification', [EmailVerificationController::class, 'send'])
         ->middleware('throttle:6,1')->name('send');
 });

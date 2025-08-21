@@ -26,7 +26,7 @@ class UserFactory extends Factory
                 fake()->randomElement(['080########', '081########', '090########', '070########'])
             ),
             'email_verified_at' => now(),
-            'password' => Hash::make('12345678'),
+            'password' => '12345678',
             'remember_token' => Str::random(10),
         ];
     }

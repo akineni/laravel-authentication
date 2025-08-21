@@ -32,7 +32,11 @@ class AuthService
     public function register(array $data): User
     {
         $user = User::create($data);
-        event(new Registered($user));
+
+        if (config('custom.email_verification')) {
+            event(new Registered($user));
+        }
+
         return $user;
     }
 

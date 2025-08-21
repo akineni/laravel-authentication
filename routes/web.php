@@ -45,7 +45,12 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-Route::middleware(['auth', 'verified'])->controller(DashboardController::class)->group(function () {
+Route::middleware(
+    array_filter([
+        'auth',
+        config('custom.email_verification') ? 'verified' : null
+    ]))
+->controller(DashboardController::class)->group(function () {
     Route::get('/dashboard', 'view')->name('dashboard');
     Route::get('/logout', 'logout')->name('logout');
 });

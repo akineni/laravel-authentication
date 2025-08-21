@@ -1,4 +1,4 @@
-# Laravel Authentication Module
+# Laravel Authentication
 
 A Laravel 10+ project focused on authentication with email verification, password reset, and queued notifications. This serves as a foundation for future modules like product management.
 
